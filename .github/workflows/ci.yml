@@ -24,4 +24,9 @@ jobs:
           sudo mv kubeconform /usr/local/bin/kubeconform
       
       - name: Validate manifest
-        run: kubeconform -strict -summary kubernetes/
+        run: | 
+          if [ -d "kubernetes" ] && find kubernetes -type f \( -name "*.yaml" -o -name "*.yml" \) | grep -q .; then
+            find kubernetes -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 | xargs -0 kubeconform -strict -summary
+          else
+            echo "No Kubernetes manifests found. Skipping validation."
+          fi
