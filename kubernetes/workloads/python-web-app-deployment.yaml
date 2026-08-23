@@ -59,3 +59,22 @@ spec:
             seccompProfile:
               type: RuntimeDefault
             
+          env:
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: python-web-app-config
+                  key: APP_ENV
+
+            - name: APP_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: python-web-app-config
+                  key: APP_MESSAGE
+            
+            - name: APP_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: python-web-app-secret
+                  key: API_KEY
+            
