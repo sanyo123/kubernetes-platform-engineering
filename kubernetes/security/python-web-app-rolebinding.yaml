@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+
+metadata:
+  name: python-web-app-pod-reader-binding
+  namespace: python-web-app
+
+subjects:
+  - kind: ServiceAccount
+    name: python-web-app-sa
+    namespace: python-web-app
+
+roleRef:
+  kind: Role
+  name: python-web-app-pod-reader
+  apiGroup: rbac.authorization.k8s.io

@@ -4,6 +4,8 @@ kind: ConfigMap
 
 metadata:
   name: python-web-app-config
+  namespace: python-web-app
+
 
 data:
   APP_ENV: development

@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: python-web-app
+  namespace: python-web-app
 
 spec:
   replicas: 2
@@ -15,6 +16,7 @@ spec:
         app: python-web-app
 
     spec:
+      serviceAccountName: python-web-app-sa
       containers:
         - name: python-web-app
           image: python-web-app:v2
