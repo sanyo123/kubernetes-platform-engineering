@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-demo
+  namespace: python-web-app
+
+spec:
+  containers:
+    - name: volume-demo
+      image: busybox
+      command: ["sleep", "3600"]
+
+      volumeMounts:
+        - name: demo-storage
+          mountPath: /data
+
+  volumes:
+    - name: demo-storage
+      emptyDir: {}

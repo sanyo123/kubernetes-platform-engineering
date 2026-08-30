@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: DaemonSet
+
+metadata:
+  name: node-monitor
+  namespace: python-web-app
+
+spec:
+  selector:
+    matchLabels:
+      app: node-monitor
+
+  template:
+    metadata:
+      labels:
+        app: node-monitor
+
+    spec:
+      containers:
+        - name: node-monitor
+          image: busybox
+
+          command:
+            - sh
+            - -c
+            - while true; do echo "Monitoring node $(hostname)"; sleep 30; done
