@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: platform-scheduled-task
+  namespace: python-web-app
+
+spec:
+  schedule: "*/1 * * * *"
+  timeZone: "Europe/London"
+  suspend: true
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: scheduled-task
+              image: busybox
+              command:
+                - sh
+                - -c
+                - echo "Scheduled platform task executed"; date
+
+          restartPolicy: Never
+       
