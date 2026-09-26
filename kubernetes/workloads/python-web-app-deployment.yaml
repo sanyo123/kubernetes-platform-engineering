@@ -16,9 +16,12 @@ spec:
     metadata:
       labels:
         app: python-web-app
+        azure.workload.identity/use: "true"
 
     spec:
       serviceAccountName: python-web-app-sa
+      nodeSelector:
+        workload: applications
 
       affinity:
         podAntiAffinity:
@@ -35,8 +38,8 @@ spec:
 
       containers:
         - name: python-web-app
-          image: python-web-app:v2
-          imagePullPolicy: Never
+          image: aksplatformdevuksacr.azurecr.io/python-web-app:v2
+          imagePullPolicy: IfNotPresent
 
           ports:
             - containerPort: 8080
