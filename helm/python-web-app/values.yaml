@@ -20,7 +20,7 @@ resources:
 
 configmap:
   APP_ENV: "production"
-  APP_MESSAGE: "Hello from the Python Web App!"
+  APP_MESSAGE: "Hello from Argo CD Auto Sync!"
 
 
 
