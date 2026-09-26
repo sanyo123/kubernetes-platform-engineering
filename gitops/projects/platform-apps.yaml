@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+
+metadata:
+  name: platform-apps
+  namespace: argocd
+
+spec:
+  sourceRepos:
+    - https://github.com/sanyo123/kubernetes-platform-engineering.git
+
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: python-web-app
+
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
