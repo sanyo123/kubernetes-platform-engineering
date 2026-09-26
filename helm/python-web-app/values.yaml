@@ -1,3 +1,4 @@
+# Trigger Argo CD automatic prune test
 replicaCount: 2
 
 image:
@@ -22,8 +23,6 @@ configmap:
   APP_ENV: "production"
   APP_MESSAGE: "Hello from Argo CD Auto Sync!"
 
-
-
 hpa:
   minReplicas: 2
   maxReplicas: 5
@@ -37,11 +36,8 @@ networkPolicy:
     allowedCIDRs:
       - 92.25.13.254/32
 
-
-
 pdb:
   minAvailable: 1
-
 
 role:
   resources:
@@ -55,7 +51,6 @@ rolebinding:
   roleRef:
     kind: Role
     name: python-web-app-pod-reader
-    
 
 secret:
   API_KEY: "REPLACE_ME"
