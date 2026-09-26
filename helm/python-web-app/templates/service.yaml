@@ -3,12 +3,11 @@ kind: Service
 metadata:
   name: python-web-app-service
   namespace: python-web-app
-
 spec:
   selector:
     app: python-web-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8080
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
   type: LoadBalancer

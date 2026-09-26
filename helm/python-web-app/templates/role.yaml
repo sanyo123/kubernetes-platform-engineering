@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+
+metadata:
+  name: python-web-app-pod-reader
+  namespace: python-web-app
+
+rules:
+  - apiGroups:
+      - ""
+    resources:
+    {{ .Values.role.resources | toYaml | nindent 6 }}
+    verbs:
+    {{ .Values.role.verbs | toYaml | nindent 6 }}
+ 

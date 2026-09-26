@@ -1,0 +1,64 @@
+replicaCount: 2
+
+image:
+  repository: aksplatformdevuksacr.azurecr.io/python-web-app
+  tag: v2
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+configmap:
+  APP_ENV: "production"
+  APP_MESSAGE: "Hello from the Python Web App!"
+
+
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+
+networkPolicy:
+  ingress:
+    ports:
+      - protocol: TCP
+        port: 8080
+    allowedCIDRs:
+      - 92.25.13.254/32
+
+
+
+pdb:
+  minAvailable: 1
+
+
+role:
+  resources:
+    - pods
+  verbs:
+    - get
+    - list
+    - watch
+
+rolebinding:
+  roleRef:
+    kind: Role
+    name: python-web-app-pod-reader
+    
+
+secret:
+  API_KEY: "REPLACE_ME"
+
+workloadIdentity:
+  clientId: ""

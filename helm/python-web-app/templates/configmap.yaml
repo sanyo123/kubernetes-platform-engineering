@@ -1,0 +1,12 @@
+apiVersion: v1
+
+kind: ConfigMap
+
+metadata:
+  name: python-web-app-config
+  namespace: python-web-app
+
+
+data:
+  APP_ENV: {{ .Values.configmap.APP_ENV }}
+  APP_MESSAGE: {{ .Values.configmap.APP_MESSAGE }}

@@ -15,19 +15,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Install kubeconform
-        run: | 
+        run: |
           curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz -o kubeconform.tar.gz
           tar xf kubeconform.tar.gz
           sudo mv kubeconform /usr/local/bin/kubeconform
-      
+
       - name: Validate manifest
-        run: | 
+        run: |
           if [ -d "kubernetes" ] && find kubernetes -type f \( -name "*.yaml" -o -name "*.yml" \) | grep -q .; then
             find kubernetes -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 | xargs -0 kubeconform -strict -summary
           else
             echo "No Kubernetes manifests found. Skipping validation."
           fi
+
+  validate-helm:
+    name: Validate Helm Chart
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Check Helm
+        run: helm version
+
+      - name: Lint Helm chart
+        run: helm lint helm/python-web-app
+
+
+      - name: Install kubeconform
+        run: |
+          curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz -o kubeconform.tar.gz
+          tar xf kubeconform.tar.gz
+          sudo mv kubeconform /usr/local/bin/kubeconform
+      - name: Render Helm chart
+        run: helm template python-web-app helm/python-web-app > rendered.yaml
+      
+
+
+      - name: Validate rendered Helm chart
+        run: kubeconform -strict -summary rendered.yaml
