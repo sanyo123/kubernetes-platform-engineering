@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: python-web-app
+  namespace: python-web-app
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: python-web-app
+
+  template:
+    metadata:
+      labels:
+        app: python-web-app
+        azure.workload.identity/use: "true"
+
+    spec:
+      serviceAccountName: python-web-app-sa
+      nodeSelector:
+        workload: applications
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - python-web-app
+                topologyKey: kubernetes.io/hostname
+
+      containers:
+        - name: python-web-app
+          image: {{.Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: 8080
+
+          resources:
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsGroup: 999
+            runAsUser: 999
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+
+          env:
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: python-web-app-config
+                  key: APP_ENV
+
+            - name: APP_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: python-web-app-config
+                  key: APP_MESSAGE
+
+            - name: APP_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: python-web-app-secret
+                  key: API_KEY
